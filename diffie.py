@@ -12,6 +12,8 @@ a_hex = 'A4D1CBD5 C3FD3412 6765A442 EFB99905 F8104DD2 58AC507F D6406CFF 14266D31
 q = 35
 a = 5
 
+q_int = int(q_hex.replace(' ', ''), 16)
+a_int = int(a_hex.replace(' ', ''), 16)
 
 def generate_public_key(priv_x, q, a):
     # priv_x < q
