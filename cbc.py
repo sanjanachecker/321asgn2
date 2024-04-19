@@ -1,5 +1,4 @@
 from ssl import RAND_bytes
-import sys
 from Crypto.Cipher import AES
 
 
@@ -45,6 +44,7 @@ def cbc_encrypt(im, key, iv):
 
     encrypted_data = bytes()
     prev_block = iv
+    print("iv is type: ", type(iv))
 
     for i in range(0, len(padded_file), 16):
         block = padded_file[i:i+16]
@@ -54,4 +54,4 @@ def cbc_encrypt(im, key, iv):
         encrypted_data += encrypted_block
         prev_block = encrypted_block
 
-    return encrypted_data, key, iv
+    return encrypted_data

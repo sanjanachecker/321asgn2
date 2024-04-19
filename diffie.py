@@ -39,15 +39,14 @@ print("secret key b:", k_b)
 
 secret_key = str(k_a).encode('utf-8')
 
-k = hashlib.sha256(secret_key).hexdigest()[:16]
+k = hashlib.sha256(secret_key).digest()[:16]
+print(type(k))
 print(k)
-
-
 iv = RAND_bytes(16)
-
+print(type(iv))
 
 m1 = "hi bob".encode('utf-8')
-encrypted_m1 = cbc_encrypt(m1, iv, k)
+encrypted_m1 = cbc_encrypt(m1, k, iv)
 print("encrypted message ", encrypted_m1)
 m1_decrypted = cbc_decrypt(encrypted_m1, k, iv)
 print("decrypted ", m1_decrypted)
