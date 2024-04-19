@@ -1,5 +1,4 @@
-from Crypto.Random import random
-from Crypto.Hash import SHA256
+import hashlib
 from Crypto.Cipher import AES
 
 q_hex = 'B10B8F96 A080E01D DE92DE5E AE5D54EC 52C99FBC FB06A3C6 9A6A9DCA 52D23B61 6073E286 75A23D18 9838EF1E 2EE652C013ECB4AE A9061123 24975C3C D49B83BF ACCBDD7D 90C4BD7098488E9C 219A7372 4EFFD6FA E5644738 FAA31A4F F55BCCC0A151AF5F 0DC8B4BD 45BF37DF 365C1A65 E68CFDA7 6D4DA708DF1FB2BC 2E4A4371'
@@ -32,3 +31,8 @@ k_b = generate_secret_key(y_a, 15, q)
 
 print("secret key a:", k_a)
 print("secret key b:", k_b)
+
+secret_key = str(k_a).encode('utf-8')
+
+k = hashlib.sha256(secret_key).hexdigest()[:16]
+print(k)
