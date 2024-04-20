@@ -37,12 +37,15 @@ s_a = generate_secret_key(y_b_tampered, 6, q)
 print(y_a)
 s_b = generate_secret_key(y_a_tampered, 15, q)
 
-print("secret key a:", k_a)
-print("secret key b:", k_b)
+#mallory knows secret key is 0
+s_mal = 0
+
+# note: mallory knows both alice and bob's secret keys should be 0, since q^ anything % q is 0.
+print("secret key a:", s_a)
+print("secret key b:", s_b)
 
 # encode secret key and truncate SHA-256 hash
-secret_key = str(k_a).encode('utf-8')
-
+secret_key = str(s_a).encode('utf-8')
 k = hashlib.sha256(secret_key).digest()[:16]
 # print(type(k))
 # print(k)
@@ -52,9 +55,16 @@ iv = RAND_bytes(16)
 # encrypt with cbc
 m1 = "hi bob".encode('utf-8')
 encrypted_m1 = cbc_encrypt(m1, k, iv)
-print("encrypted message ", encrypted_m1)
+print("alice's encrypted message ", encrypted_m1)
 
-# decrypt with cbc 
+# bob decrypt with cbc 
 m1_decrypted = cbc_decrypt(encrypted_m1, k, iv)
 m1_decrypted_string = m1_decrypted.decode('utf-8')
-print("decrypted ", m1_decrypted_string)
+print("bob decrypted message", m1_decrypted_string)
+
+# mallory decrypt with cbc
+secret_key = str(s_mal).encode('utf-8')
+k = hashlib.sha256(secret_key).digest()[:16]
+mal_decrypted = cbc_decrypt(encrypted_m1, k, iv)
+mal_decrypted_string = mal_decrypted.decode('utf-8')
+print("mallory decrypted message", mal_decrypted_string)
