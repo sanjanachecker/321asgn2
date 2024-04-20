@@ -28,10 +28,14 @@ y_b = generate_public_key(15, q, a)
 print("public key a:", y_a)
 print("public key b:", y_b)
 
+# mallory tampers with public key
+y_a_tampered = q
+y_b_tampered = q
+
 # alice and bob generate secret key from public key
-k_a = generate_secret_key(y_b, 6, q)
+s_a = generate_secret_key(y_b_tampered, 6, q)
 print(y_a)
-k_b = generate_secret_key(y_a, 15, q)
+s_b = generate_secret_key(y_a_tampered, 15, q)
 
 print("secret key a:", k_a)
 print("secret key b:", k_b)
