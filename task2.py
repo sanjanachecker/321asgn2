@@ -37,7 +37,7 @@ s_a = generate_secret_key(y_b_tampered, 6, q)
 print(y_a)
 s_b = generate_secret_key(y_a_tampered, 15, q)
 
-#mallory knows secret key is 0
+# mallory knows secret key is 0
 s_mal = 0
 
 # note: mallory knows both alice and bob's secret keys should be 0, since q^ anything % q is 0.
@@ -57,7 +57,7 @@ m1 = "hi bob".encode('utf-8')
 encrypted_m1 = cbc_encrypt(m1, k, iv)
 print("alice's encrypted message ", encrypted_m1)
 
-# bob decrypt with cbc 
+# bob decrypt with cbc
 m1_decrypted = cbc_decrypt(encrypted_m1, k, iv)
 m1_decrypted_string = m1_decrypted.decode('utf-8')
 print("bob decrypted message", m1_decrypted_string)
@@ -68,3 +68,9 @@ k = hashlib.sha256(secret_key).digest()[:16]
 mal_decrypted = cbc_decrypt(encrypted_m1, k, iv)
 mal_decrypted_string = mal_decrypted.decode('utf-8')
 print("mallory decrypted message", mal_decrypted_string)
+
+
+# mallory tampering with alpha:
+# if a is 1, it will be 1
+# if a is q, it will be 0
+# if a is q - 1 then if x is even you get 1, if x is odd you get q - 1
