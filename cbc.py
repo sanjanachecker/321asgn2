@@ -44,7 +44,7 @@ def cbc_encrypt(im, key, iv):
 
     encrypted_data = bytes()
     prev_block = iv
-    print("iv is type: ", type(iv))
+    # print("iv is type: ", type(iv))
 
     for i in range(0, len(padded_file), 16):
         block = padded_file[i:i+16]

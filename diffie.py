@@ -46,11 +46,22 @@ iv = RAND_bytes(16)
 # print(type(iv))
 
 # encrypt with cbc
-m1 = "hi bob".encode('utf-8')
+m1 = "Hi Bob!"
+print("Alice's original message: ", m1)
+m2 = "Hi Alice!"
+print("Bob's original message: ", m2)
+m1 = m1.encode()
+m2 = m2.encode()
 encrypted_m1 = cbc_encrypt(m1, k, iv)
-print("encrypted message ", encrypted_m1)
+encrypted_m2 = cbc_encrypt(m2, k, iv)
+print("Alice's encrypted message: ", encrypted_m1)
+print("Bob's encrypted message: ", encrypted_m2)
 
-# decrypt with cbc 
+
+# Alice and Bob decrypt with cbc
 m1_decrypted = cbc_decrypt(encrypted_m1, k, iv)
 m1_decrypted_string = m1_decrypted.decode('utf-8')
-print("decrypted ", m1_decrypted_string)
+print("Bob decrypted Alice's message: ", m1_decrypted_string)
+m2_decrypted = cbc_decrypt(encrypted_m2, k, iv)
+m2_decrypted_string = m2_decrypted.decode('utf-8')
+print("Alice decrypted Bob's message: ", m2_decrypted_string)
