@@ -1,30 +1,9 @@
-from random import randint
+import random
+import hashlib
 from sympy import *
 from Crypto.Util import number
-
-
-# from gmpy2 import mpz
-
-
-# a = 1
-# b = 100
-# p = randint(a, b)
-# q = randint(a, b)
-# while not isprime(p) or not isprime(q) or p == q:
-#     p = randint(a, b)
-#     q = randint(a, b)
-
-# print(p)
-# print(q)
-
-
-# def generateKey(p, q):
-#     n = p * q
-#     phi_n = (p - 1) * (q - 1)
-#     e = 65537
-
-#     d = pow(e, -1, phi_n)
-#     return ((n, e), (n, d))
+from cbc import *
+from ssl import RAND_bytes
 
 
 def generate_prime(bits):
@@ -60,8 +39,8 @@ def decrypt(ciphertext, private_key):
     return pow(ciphertext, d, n)
 
 
-# Testing
-message = "Hello, RSA!"
+# sending messages to self
+message = "Hello world!"
 hex_message = int(message.encode('utf-8').hex(), 16)
 p = generate_prime(2048)
 q = generate_prime(2048)
@@ -73,3 +52,44 @@ print("Original Message:", message)
 print("Encrypted Message:", encrypted_message)
 print("Decrypted Message:", bytes.fromhex(
     hex(decrypted_message)[2:]).decode('utf-8'))
+
+
+# part 2 
+#part 2
+p = generate_prime(2048)
+q = generate_prime(2048)
+
+alice_pk, alice_sk = generate_keypair(p, q)
+n, e = alice_pk
+n, d = alice_sk
+s = random.randint(1, n) # natural number 
+
+
+#bob computes ciphertext and sends c
+c = pow(s, e, n)
+print("c: ", c)
+
+# mallory tampers with c, sending c' instead
+c_prime = 2
+
+# alice decrypts c
+s = pow(c_prime, d, n)
+
+# alice computes k 
+secret_key = str(s).encode('utf-8')
+k = hashlib.sha256(secret_key).digest()[:16]
+
+iv = RAND_bytes(16)
+
+m = "Hi Bob!".encode('utf-8')
+c0 = cbc_encrypt(m, k, iv)
+print("alice's encrypted message ", c0)
+
+# mallory computes value of s without knowing Alice's private key
+s_mal = c_prime * pow(s, e, n) % n
+k_mal = hashlib.sha256(str(s_mal).encode('utf-8')).digest()[:16]
+
+# mallory decrypt with cbc
+mal_decrypted = cbc_decrypt(c0, k_mal, iv)
+mal_decrypted_string = mal_decrypted.decode('utf-8')
+print("mallory decrypted message", mal_decrypted_string)
