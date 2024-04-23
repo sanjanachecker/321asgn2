@@ -1,5 +1,8 @@
 from random import randint
 from sympy import *
+from Crypto.Util import number
+
+
 # from gmpy2 import mpz
 
 
@@ -24,36 +27,26 @@ from sympy import *
 #     return ((n, e), (n, d))
 
 
-# public_key, private_key = generateKey(p, q)
-# print("Public key:", public_key)
-# print("Private key:", private_key)
-
-import random
-
-
 def generate_prime(bits):
-    while True:
-        prime_candidate = random.getrandbits(bits)
-        if isprime(prime_candidate):
-            return prime_candidate
+    primeNum = number.getPrime(bits)
+
+    return primeNum
+
+# def mod_inv(a, m):
+#     m0, x0, x1 = m, 0, 1
+#     while a > 1:
+#         q = a // m
+#         m, a = a % m, m
+#         x0, x1 = x1 - q * x0, x0
+#     return x1 + m0 if x1 < 0 else x1
 
 
-def mod_inv(a, m):
-    m0, x0, x1 = m, 0, 1
-    while a > 1:
-        q = a // m
-        m, a = a % m, m
-        x0, x1 = x1 - q * x0, x0
-    return x1 + m0 if x1 < 0 else x1
-
-
-def generate_keypair(bits):
-    p = generate_prime(bits // 2)
-    q = generate_prime(bits // 2)
+def generate_keypair(p,q):
     n = p * q
     phi = (p - 1) * (q - 1)
     e = 65537
-    d = mod_inv(e, phi)
+    d = pow(e, -1, phi)
+    # d = mod_inv(e, phi)
     return ((e, n), (d, n))
 
 
@@ -70,8 +63,9 @@ def decrypt(ciphertext, private_key):
 # Testing
 message = "Hello, RSA!"
 hex_message = int(message.encode('utf-8').hex(), 16)
-
-public_key, private_key = generate_keypair(2048)
+p = generate_prime(2048)
+q = generate_prime(2048)
+public_key, private_key = generate_keypair(p, q)
 encrypted_message = encrypt(hex_message, public_key)
 decrypted_message = decrypt(encrypted_message, private_key)
 
