@@ -88,6 +88,7 @@ print("Alice's encrypted message ", c0)
 
 # mallory computes value of s without knowing Alice's private key
 s_mal = pow(c_prime, e, n)
+# mallory's s value should be the same as alice's computed s value
 print("mallory's s value: ", s_mal)
 k_mal = hashlib.sha256(str(s_mal).encode('utf-8')).digest()[:16]
 
