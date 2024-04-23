@@ -39,6 +39,7 @@ def decrypt(ciphertext, private_key):
     return pow(ciphertext, d, n)
 
 
+# -------- part 1 ------------
 # sending messages to self
 message = "Hello world!"
 hex_message = int(message.encode('utf-8').hex(), 16)
@@ -54,8 +55,7 @@ print("Decrypted Message:", bytes.fromhex(
     hex(decrypted_message)[2:]).decode('utf-8'))
 
 
-# part 2 
-#part 2
+# ------ part 2 -------
 p = generate_prime(2048)
 q = generate_prime(2048)
 
@@ -64,16 +64,16 @@ n, e = alice_pk
 n, d = alice_sk
 s = random.randint(1, n) # natural number 
 
-
 #bob computes ciphertext and sends c
 c = pow(s, e, n)
 print("c: ", c)
 
 # mallory tampers with c, sending c' instead
-c_prime = 2
+c_prime = c * 3
 
 # alice decrypts c
 s = pow(c_prime, d, n)
+print("alice's s value: ", s)
 
 # alice computes k 
 secret_key = str(s).encode('utf-8')
@@ -81,15 +81,17 @@ k = hashlib.sha256(secret_key).digest()[:16]
 
 iv = RAND_bytes(16)
 
-m = "Hi Bob!".encode('utf-8')
-c0 = cbc_encrypt(m, k, iv)
-print("alice's encrypted message ", c0)
+m = "Hi Bob!"
+print("Alice's original message: ", m)
+c0 = cbc_encrypt((m.encode('utf-8')), k, iv)
+print("Alice's encrypted message ", c0)
 
 # mallory computes value of s without knowing Alice's private key
-s_mal = c_prime * pow(s, e, n) % n
+s_mal = pow(c_prime, e, n)
+print("mallory's s value: ", s_mal)
 k_mal = hashlib.sha256(str(s_mal).encode('utf-8')).digest()[:16]
 
 # mallory decrypt with cbc
 mal_decrypted = cbc_decrypt(c0, k_mal, iv)
 mal_decrypted_string = mal_decrypted.decode('utf-8')
-print("mallory decrypted message", mal_decrypted_string)
+print("Mallory decrypted Alice's message", mal_decrypted_string)
