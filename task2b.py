@@ -14,7 +14,9 @@ q_hex = 'B10B8F96 A080E01D DE92DE5E AE5D54EC 52C99FBC FB06A3C6 9A6A9DCA 52D23B61
 a_hex = 'A4D1CBD5 C3FD3412 6765A442 EFB99905 F8104DD2 58AC507F D6406CFF 14266D31 266FEA1E 5C41564B 777E690F 5504F213 160217B4 B01B886A 5E91547F 9E2749F4 D7FBD7D3 B9A92EE1 909D0D22 63F80A76 A6A24C08 7A091F53 1DBF0A01 69B6A28A D662A4D1 8E73AFA3 2D779D59 18D08BC8 858F4DCE F97C2A24 855E6EEB 22B3B2E5'
 
 q = int(q_hex.replace(' ', ''), 16)
-a = (q - 1)
+# a = (q - 1)
+a = 1
+
 
 
 def generate_public_key(priv_x, q, a):
@@ -38,10 +40,9 @@ s_a = generate_secret_key(y_a, 6, q)
 print(y_a)
 s_b = generate_secret_key(y_b, 15, q)
 
-# mallory knows secret key is 0
-s_mal = 0
+# mallory knows secret key is 1
+s_mal = 1
 
-# note: mallory knows both alice and bob's secret keys should be 0, since q^ anything % q is 0.
 print("secret key a:", s_a)
 print("secret key b:", s_b)
 
