@@ -11,16 +11,8 @@ def generate_prime(bits):
 
     return primeNum
 
-# def mod_inv(a, m):
-#     m0, x0, x1 = m, 0, 1
-#     while a > 1:
-#         q = a // m
-#         m, a = a % m, m
-#         x0, x1 = x1 - q * x0, x0
-#     return x1 + m0 if x1 < 0 else x1
 
-
-def generate_keypair(p,q):
+def generate_keypair(p, q):
     n = p * q
     phi = (p - 1) * (q - 1)
     e = 65537
@@ -62,9 +54,9 @@ q = generate_prime(2048)
 alice_pk, alice_sk = generate_keypair(p, q)
 n, e = alice_pk
 n, d = alice_sk
-s = random.randint(1, n) # natural number 
+s = random.randint(1, n)  # natural number
 
-#bob computes ciphertext and sends c
+# bob computes ciphertext and sends c
 c = pow(s, e, n)
 print("c: ", c)
 
@@ -75,11 +67,12 @@ c_prime = c * 3
 s = pow(c_prime, d, n)
 print("alice's s value: ", s)
 
-# alice computes k 
+# alice computes k
 secret_key = str(s).encode('utf-8')
 k = hashlib.sha256(secret_key).digest()[:16]
 
 iv = RAND_bytes(16)
+
 
 m = "Hi Bob!"
 print("Alice's original message: ", m)
@@ -96,3 +89,33 @@ k_mal = hashlib.sha256(str(s_mal).encode('utf-8')).digest()[:16]
 mal_decrypted = cbc_decrypt(c0, k_mal, iv)
 mal_decrypted_string = mal_decrypted.decode('utf-8')
 print("Mallory decrypted Alice's message", mal_decrypted_string)
+
+
+# ------ malleability -------
+
+
+def sign(message, d, n):
+    return pow(message, d, n)
+
+
+# assume mallory has these
+m1 = 3
+m2 = 5
+n = 3233  # large prime for mod
+d = 2753  # large priv exponent
+
+# mallory observed signatures
+sigma1 = sign(m1, d, n)
+sigma2 = sign(m2, d, n)
+print("sigma1: ", sigma1, "\n sigma2: ", sigma2)
+
+m3 = m1 * m2
+sigma3 = (sigma1 * sigma2) % n
+
+
+def check(sig, m, d, n):
+    return sig == pow(m, d, n)
+
+
+print(f"m3 = {m3}, sigma3: {sigma3}")
+print(check(sigma3, m3, d, n))

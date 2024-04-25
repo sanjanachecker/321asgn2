@@ -14,9 +14,7 @@ q_hex = 'B10B8F96 A080E01D DE92DE5E AE5D54EC 52C99FBC FB06A3C6 9A6A9DCA 52D23B61
 a_hex = 'A4D1CBD5 C3FD3412 6765A442 EFB99905 F8104DD2 58AC507F D6406CFF 14266D31 266FEA1E 5C41564B 777E690F 5504F213 160217B4 B01B886A 5E91547F 9E2749F4 D7FBD7D3 B9A92EE1 909D0D22 63F80A76 A6A24C08 7A091F53 1DBF0A01 69B6A28A D662A4D1 8E73AFA3 2D779D59 18D08BC8 858F4DCE F97C2A24 855E6EEB 22B3B2E5'
 
 q = int(q_hex.replace(' ', ''), 16)
-# a = (q - 1)
-a = 1
-
+a = (q - 1)
 
 
 def generate_public_key(priv_x, q, a):
@@ -70,9 +68,3 @@ k = hashlib.sha256(secret_key).digest()[:16]
 mal_decrypted = cbc_decrypt(encrypted_m1, k, iv)
 mal_decrypted_string = mal_decrypted.decode('utf-8')
 print("mallory decrypted message", mal_decrypted_string)
-
-
-# mallory tampering with alpha:
-# if a is 1, it will be 1
-# if a is q, it will be 0
-# if a is q - 1 then if x is even you get 1, if x is odd you get q - 1
